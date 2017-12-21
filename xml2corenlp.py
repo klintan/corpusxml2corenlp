@@ -7,22 +7,19 @@ sentence = []
 train_sentence = []
 
 doc = []
-with open ("corpus.xml", "r") as f:
+with open(sys.argv[1], "r") as f:
     for line in f:
-        #sentence.append(line)
-        soup = BeautifulSoup(line)
+        soup = BeautifulSoup(line, "html.parser")
         for word in soup.find_all('w'):
                 if word['pos'] == "PM":
-                    train_sentence.append(word.getText().encode('utf-8') + "\t"+ "LABEL")
+                    train_sentence.append(word.getText() + "\t"+ "LABEL")
                 else:
-                    train_sentence.append(word.getText().encode('utf-8')+"\t"+"0")
+                    train_sentence.append(word.getText() +"\t"+"0")
 
         if "</sentence>" in line:
             doc.append("\n".join(train_sentence) + "\n")
             train_sentence = []
 
-        print "length of doc"
-        print len(doc)
         if len(doc) == 500:
             f1.write("".join(doc))
             doc = []
